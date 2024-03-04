@@ -22,7 +22,7 @@
 					"scripts": [
 						{
 							"type": "Query",
-							"text": "use labsqldb;\r\ndrop table if exists [SalesLT].[ProductAnalytics];\r\ncreate table [SalesLT].[ProductAnalytics] as \r\nselect ord.ProductID, prod.Name, sum(ord.OrderQty) total\r\nfrom SalesLT.SalesOrderDetail ord join SalesLT.Product prod on ord.ProductID = prod.ProductID\r\ngroup by ord.ProductID, prod.Name\r\norder by total desc;"
+							"text": "use labsqldb;\r\n\r\ndrop table if exists [SalesLT].[ProductAnalytics];\r\n\r\ncreate table [SalesLT].[ProductAnalytics] (\r\n  ProductID int not null,\r\n  Name nvarchar(50) not null,\r\n  total int not null\r\n);\r\n\r\ninsert into [SalesLT].[ProductAnalytics]\r\nselect ord.ProductID, prod.Name, sum(ord.OrderQty) total\r\nfrom SalesLT.SalesOrderDetail ord join SalesLT.Product prod on ord.ProductID = prod.ProductID\r\ngroup by ord.ProductID, prod.Name\r\norder by total desc;"
 						}
 					],
 					"scriptBlockExecutionTimeout": "02:00:00"
