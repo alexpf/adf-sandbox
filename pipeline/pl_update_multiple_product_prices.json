@@ -45,7 +45,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_product_data').output",
+						"value": "@activity('get_product_data').output.value",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -53,8 +53,6 @@
 						{
 							"name": "calculate_price",
 							"type": "SetVariable",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"secureOutput": false,
