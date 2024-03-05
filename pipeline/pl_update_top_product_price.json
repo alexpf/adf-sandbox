@@ -29,11 +29,36 @@
 						"type": "DatasetReference"
 					}
 				}
+			},
+			{
+				"name": "calculate_price",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get_product_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": []
 			}
 		],
 		"parameters": {
 			"p_product_name": {
 				"type": "string"
+			},
+			"p_price_percent": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"v_new_price": {
+				"type": "Integer"
 			}
 		},
 		"annotations": []
