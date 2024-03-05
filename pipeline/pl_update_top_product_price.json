@@ -1,6 +1,36 @@
 {
 	"name": "pl_update_top_product_price",
 	"properties": {
+		"activities": [
+			{
+				"name": "get_product_data",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat(\n    'select ProductID, Name, ListPrice from SalesLT.Product where Name = ''',\n    pipeline().parameters.p_product_name,\n    ''''\n)",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_sql_database",
+						"type": "DatasetReference"
+					}
+				}
+			}
+		],
 		"parameters": {
 			"p_product_name": {
 				"type": "string"
