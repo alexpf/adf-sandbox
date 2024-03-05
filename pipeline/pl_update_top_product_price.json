@@ -1,0 +1,11 @@
+{
+	"name": "pl_update_top_product_price",
+	"properties": {
+		"parameters": {
+			"p_product_name": {
+				"type": "string"
+			}
+		},
+		"annotations": []
+	}
+}
