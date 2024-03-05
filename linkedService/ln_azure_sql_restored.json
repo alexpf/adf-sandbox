@@ -1,0 +1,10 @@
+{
+	"name": "ln_azure_sql_restored",
+	"properties": {
+		"annotations": [],
+		"type": "AzureSqlDatabase",
+		"typeProperties": {
+			"connectionString": "Integrated Security=False;Encrypt=True;Connection Timeout=30;Data Source=alekseisqlserver.database.windows.net;Initial Catalog=labsqldb_restored"
+		}
+	}
+}
