@@ -70,8 +70,6 @@
 						{
 							"name": "update_price",
 							"type": "Script",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "calculate_price",
