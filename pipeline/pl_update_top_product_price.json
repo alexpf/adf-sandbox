@@ -82,7 +82,7 @@
 						{
 							"type": "NonQuery",
 							"text": {
-								"value": "@concat('update SalesLT.Product set ListPrice=''',\nvariables('v_new_price'),\n'''')",
+								"value": "@concat('update SalesLT.Product set ListPrice=''',\nvariables('v_new_price'),\n''', ModifiedDate=getdate()')",
 								"type": "Expression"
 							}
 						}
