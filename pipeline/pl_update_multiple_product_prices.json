@@ -1,0 +1,109 @@
+{
+	"name": "pl_update_multiple_product_prices",
+	"properties": {
+		"activities": [
+			{
+				"name": "get_product_data",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderQuery": {
+							"value": "@concat(\n    'select ProductID, Name, ListPrice from SalesLT.Product where Name = ''',\n    pipeline().parameters.p_product_name,\n    ''''\n)",
+							"type": "Expression"
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_sql_database",
+						"type": "DatasetReference"
+					}
+				}
+			},
+			{
+				"name": "calculate_price",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "get_product_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_new_price",
+					"value": {
+						"value": "@string(\n    mul(\n        activity('get_product_data').output.firstRow.ListPrice, add(1.0, div(pipeline().parameters.p_price_percent, 100.0))))\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "update_price",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "calculate_price",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "ln_azuresql_saleslt",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "@concat('update SalesLT.Product set ListPrice=''',\nvariables('v_new_price'),\n''', ModifiedDate=getdate()')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
+			}
+		],
+		"parameters": {
+			"p_product_name": {
+				"type": "string"
+			},
+			"p_price_percent": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"v_new_price": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
