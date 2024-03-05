@@ -45,7 +45,50 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "v_new_price",
+					"value": {
+						"value": "@string(\n    mul(\n        activity('get_product_data').output.firstRow.ListPrice, add(1.0, div(pipeline().parameters.p_price_percent, 100.0))))\n",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "update_price",
+				"type": "Script",
+				"dependsOn": [
+					{
+						"activity": "calculate_price",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"linkedServiceName": {
+					"referenceName": "ln_azuresql_saleslt",
+					"type": "LinkedServiceReference"
+				},
+				"typeProperties": {
+					"scripts": [
+						{
+							"type": "NonQuery",
+							"text": {
+								"value": "@concat('update SalesLT.Product set ListPrice=''',\nvariables('v_new_price'),\n'''')",
+								"type": "Expression"
+							}
+						}
+					],
+					"scriptBlockExecutionTimeout": "02:00:00"
+				}
 			}
 		],
 		"parameters": {
@@ -58,7 +101,7 @@
 		},
 		"variables": {
 			"v_new_price": {
-				"type": "Integer"
+				"type": "String"
 			}
 		},
 		"annotations": []
