@@ -19,7 +19,9 @@
 						"referenceName": "ds_cloud_files",
 						"type": "DatasetReference"
 					},
-					"fieldList": [],
+					"fieldList": [
+						"childItems"
+					],
 					"storeSettings": {
 						"type": "AzureBlobFSReadSettings",
 						"enablePartitionDiscovery": false
@@ -30,9 +32,13 @@
 				}
 			}
 		],
-		"parameters": {
+		"variables": {
+			"folder": {
+				"type": "String",
+				"defaultValue": "products"
+			},
 			"processing_date": {
-				"type": "string",
+				"type": "String",
 				"defaultValue": "20240306"
 			}
 		},
