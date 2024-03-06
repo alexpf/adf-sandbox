@@ -1,0 +1,10 @@
+{
+	"name": "ln_cloud_raw",
+	"properties": {
+		"annotations": [],
+		"type": "AzureBlobFS",
+		"typeProperties": {
+			"url": "https://alekseilesnov.dfs.core.windows.net/"
+		}
+	}
+}
