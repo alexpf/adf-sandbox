@@ -1,6 +1,41 @@
 {
 	"name": "pl_verify_fileset",
 	"properties": {
+		"activities": [
+			{
+				"name": "get_list_of_files",
+				"type": "GetMetadata",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataset": {
+						"referenceName": "ds_cloud_files",
+						"type": "DatasetReference"
+					},
+					"fieldList": [],
+					"storeSettings": {
+						"type": "AzureBlobFSReadSettings",
+						"enablePartitionDiscovery": false
+					},
+					"formatSettings": {
+						"type": "BinaryReadSettings"
+					}
+				}
+			}
+		],
+		"parameters": {
+			"processing_date": {
+				"type": "string",
+				"defaultValue": "20240306"
+			}
+		},
 		"annotations": []
 	}
 }
