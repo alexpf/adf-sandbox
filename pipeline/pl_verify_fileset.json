@@ -206,7 +206,7 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "csv_exists",
+							"name": "check_csv",
 							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
@@ -231,7 +231,7 @@
 											"type": "Expression"
 										},
 										"file_pattern": {
-											"value": "@activity('get_job_params').output.firstRow.file_pattern",
+											"value": "@concat(item(), '.csv')",
 											"type": "Expression"
 										}
 									}
@@ -249,17 +249,71 @@
 							}
 						},
 						{
-							"name": "reset_temp",
-							"type": "SetVariable",
+							"name": "check_ctl",
+							"type": "GetMetadata",
 							"dependsOn": [],
 							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
 								"secureOutput": false,
 								"secureInput": false
 							},
 							"userProperties": [],
 							"typeProperties": {
-								"variableName": "temp",
-								"value": ""
+								"dataset": {
+									"referenceName": "ds_cloud_files",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('get_job_params').output.firstRow.container",
+											"type": "Expression"
+										},
+										"folder": {
+											"value": "@activity('get_job_params').output.firstRow.folder",
+											"type": "Expression"
+										},
+										"file_pattern": {
+											"value": "@concat(item(), '.ctl')",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "if_all_files_exist",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "check_csv",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								},
+								{
+									"activity": "check_ctl",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@and(activity('check_csv').output.exists, activity('check_ctl').output.exists)",
+									"type": "Expression"
+								}
 							}
 						}
 					]
