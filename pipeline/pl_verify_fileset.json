@@ -173,7 +173,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('select distinct [value] from string_split(''',\nvariables('all_file_names'),\n''', '','')')",
+							"value": "@concat('select distinct [value] from string_split(''',\nsubstring(variables('all_file_names'), 0, sub(length(variables('all_file_names')),1)),\n''', '','')')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -184,6 +184,85 @@
 						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "move_fileset_to_processing",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "deduplicate",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('deduplicate').output.value",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "csv_exists",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "ds_cloud_files",
+									"type": "DatasetReference",
+									"parameters": {
+										"container": {
+											"value": "@activity('get_job_params').output.firstRow.container",
+											"type": "Expression"
+										},
+										"folder": {
+											"value": "@activity('get_job_params').output.firstRow.folder",
+											"type": "Expression"
+										},
+										"file_pattern": {
+											"value": "@activity('get_job_params').output.firstRow.file_pattern",
+											"type": "Expression"
+										}
+									}
+								},
+								"fieldList": [
+									"exists"
+								],
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "BinaryReadSettings"
+								}
+							}
+						},
+						{
+							"name": "reset_temp",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "temp",
+								"value": ""
+							}
+						}
+					]
 				}
 			}
 		],
