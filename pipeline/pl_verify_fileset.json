@@ -86,12 +86,30 @@
 					},
 					"firstRowOnly": true
 				}
+			},
+			{
+				"name": "ForEach1",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "get_list_of_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": []
 			}
 		],
 		"parameters": {
 			"content": {
 				"type": "string",
 				"defaultValue": "products"
+			}
+		},
+		"variables": {
+			"all_file_names": {
+				"type": "String"
 			}
 		},
 		"annotations": []
