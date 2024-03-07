@@ -47,7 +47,10 @@
 					"storedProcedureName": "[etl].[GetJobParams]",
 					"storedProcedureParameters": {
 						"JobName": {
-							"value": "",
+							"value": {
+								"value": "@pipeline().variables('content')",
+								"type": "Expression"
+							},
 							"type": "String"
 						}
 					}
@@ -58,9 +61,9 @@
 				}
 			}
 		],
-		"variables": {
+		"parameters": {
 			"content": {
-				"type": "String",
+				"type": "string",
 				"defaultValue": "products"
 			}
 		},
