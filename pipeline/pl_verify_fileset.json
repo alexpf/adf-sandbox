@@ -5,7 +5,14 @@
 			{
 				"name": "get_list_of_files",
 				"type": "GetMetadata",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "get_job_params",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -17,7 +24,21 @@
 				"typeProperties": {
 					"dataset": {
 						"referenceName": "ds_cloud_files",
-						"type": "DatasetReference"
+						"type": "DatasetReference",
+						"parameters": {
+							"container": {
+								"value": "@activity('get_job_params').output.firstRow.container",
+								"type": "Expression"
+							},
+							"folder": {
+								"value": "@activity('get_job_params').output.firstRow.folder",
+								"type": "Expression"
+							},
+							"file_pattern": {
+								"value": "@activity('get_job_params').output.firstRow.file_pattern",
+								"type": "Expression"
+							}
+						}
 					},
 					"fieldList": [
 						"childItems"
@@ -63,7 +84,7 @@
 						"referenceName": "ds_azure_sql_database",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": false
+					"firstRowOnly": true
 				}
 			}
 		],
