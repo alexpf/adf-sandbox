@@ -114,7 +114,38 @@
 								"secureOutput": false,
 								"secureInput": false
 							},
-							"userProperties": []
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "temp",
+								"value": {
+									"value": "@variables('all_file_names')",
+									"type": "Expression"
+								}
+							}
+						},
+						{
+							"name": "update_list",
+							"type": "SetVariable",
+							"dependsOn": [
+								{
+									"activity": "save_accumulated_names",
+									"dependencyConditions": [
+										"Completed"
+									]
+								}
+							],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "all_file_names",
+								"value": {
+									"value": "@concat(variables('temp'), item().name)",
+									"type": "Expression"
+								}
+							}
 						}
 					]
 				}
