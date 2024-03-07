@@ -314,6 +314,31 @@
 									"value": "@and(activity('check_csv').output.exists, activity('check_ctl').output.exists)",
 									"type": "Expression"
 								},
+								"ifFalseActivities": [
+									{
+										"name": "set_result_false",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "pipelineReturnValue",
+											"value": [
+												{
+													"key": "result",
+													"value": {
+														"type": "Boolean",
+														"content": false
+													}
+												}
+											],
+											"setSystemVariable": true
+										}
+									}
+								],
 								"ifTrueActivities": [
 									{
 										"name": "set_result_true",
