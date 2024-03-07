@@ -173,7 +173,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "@concat('select distinct [value] from string_split(''',\nvariables('all_file_names'),\n'''')",
+							"value": "@concat('select distinct [value] from string_split(''',\nvariables('all_file_names'),\n''', '','')')",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
