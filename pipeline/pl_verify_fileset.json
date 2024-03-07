@@ -88,7 +88,7 @@
 				}
 			},
 			{
-				"name": "ForEach1",
+				"name": "accumulate_file_names",
 				"type": "ForEach",
 				"dependsOn": [
 					{
@@ -98,7 +98,26 @@
 						]
 					}
 				],
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get_list_of_files').output.childItems",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "save_accumulated_names",
+							"type": "SetVariable",
+							"dependsOn": [],
+							"policy": {
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": []
+						}
+					]
+				}
 			}
 		],
 		"parameters": {
@@ -109,6 +128,9 @@
 		},
 		"variables": {
 			"all_file_names": {
+				"type": "String"
+			},
+			"temp": {
 				"type": "String"
 			}
 		},
