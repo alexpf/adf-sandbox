@@ -33,7 +33,7 @@
 			},
 			{
 				"name": "get_job_params",
-				"type": "SqlServerStoredProcedure",
+				"type": "Lookup",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
@@ -44,20 +44,26 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"storedProcedureName": "[etl].[GetJobParams]",
-					"storedProcedureParameters": {
-						"JobName": {
-							"value": {
-								"value": "@pipeline().parameters.content",
-								"type": "Expression"
-							},
-							"type": "String"
-						}
-					}
-				},
-				"linkedServiceName": {
-					"referenceName": "ln_azuresql_saleslt",
-					"type": "LinkedServiceReference"
+					"source": {
+						"type": "AzureSqlSource",
+						"sqlReaderStoredProcedureName": "[etl].[GetJobParams]",
+						"storedProcedureParameters": {
+							"JobName": {
+								"type": "String",
+								"value": {
+									"value": "@pipeline().parameters.content",
+									"type": "Expression"
+								}
+							}
+						},
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_azure_sql_database",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
 				}
 			}
 		],
