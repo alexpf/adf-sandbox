@@ -5,6 +5,17 @@
 			"referenceName": "ln_cloud_raw",
 			"type": "LinkedServiceReference"
 		},
+		"parameters": {
+			"conttainer": {
+				"type": "string"
+			},
+			"folder": {
+				"type": "string"
+			},
+			"file_pattern": {
+				"type": "string"
+			}
+		},
 		"annotations": [],
 		"type": "Binary",
 		"typeProperties": {
