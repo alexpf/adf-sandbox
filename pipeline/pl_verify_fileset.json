@@ -48,7 +48,7 @@
 					"storedProcedureParameters": {
 						"JobName": {
 							"value": {
-								"value": "@pipeline().variables('content')",
+								"value": "@pipeline().parameters.content",
 								"type": "Expression"
 							},
 							"type": "String"
