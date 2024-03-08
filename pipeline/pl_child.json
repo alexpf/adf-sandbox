@@ -1,0 +1,48 @@
+{
+	"name": "pl_child",
+	"properties": {
+		"activities": [
+			{
+				"name": "fail",
+				"type": "Fail",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"message": "Custom message: pl_child has failed",
+					"errorCode": "1234"
+				}
+			},
+			{
+				"name": "set_return_value",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "fail",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipelineReturnValue",
+					"value": [
+						{
+							"key": "result",
+							"value": {
+								"type": "String",
+								"content": "aaa"
+							}
+						}
+					],
+					"setSystemVariable": true
+				}
+			}
+		],
+		"annotations": []
+	}
+}

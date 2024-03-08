@@ -1,0 +1,53 @@
+{
+	"name": "pl_master",
+	"properties": {
+		"activities": [
+			{
+				"name": "run_child_pipeline",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"policy": {
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "pl_child",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "update_logs",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "run_child_pipeline",
+						"dependencyConditions": [
+							"Completed"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "pipeline_log",
+					"value": {
+						"value": "@activity('run_child_pipeline').output.pipelineReturnValue.result",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"pipeline_log": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
