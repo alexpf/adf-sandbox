@@ -92,7 +92,7 @@
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "get_list_of_files",
+						"activity": "filter_unneeded_files",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -101,7 +101,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('get_list_of_files').output.childItems",
+						"value": "@activity('filter_unneeded_files').output.childItems",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -339,6 +339,29 @@
 					"variableName": "all_file_names_array",
 					"value": {
 						"value": "@union(variables('all_file_names_array_with_dups'), variables('all_file_names_array_with_dups'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "filter_unneeded_files",
+				"type": "Filter",
+				"dependsOn": [
+					{
+						"activity": "get_list_of_files",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('get_list_of_files').output.childItems",
+						"type": "Expression"
+					},
+					"condition": {
+						"value": "@or(endswith(item().name, '.csv'), \n    or(endswith(item().name, '.ctl'),\n       or(endswith(item().name, '.csv.fin'), \n          endswith(item().name, '.ctl.fin'))))",
 						"type": "Expression"
 					}
 				}
