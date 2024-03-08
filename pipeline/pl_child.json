@@ -34,8 +34,8 @@
 						{
 							"key": "result",
 							"value": {
-								"type": "String",
-								"content": "aaa"
+								"type": "Expression",
+								"content": "@activity('fail').output.message"
 							}
 						}
 					],
