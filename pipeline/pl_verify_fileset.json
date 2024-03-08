@@ -154,7 +154,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"variableName": "all_file_names_array_with_dups",
-								"value": "substring(item().name, 0, indexof(item().name, '.'))"
+								"value": "@substring(item().name, 0, indexof(item().name, '.'))"
 							}
 						}
 					]
