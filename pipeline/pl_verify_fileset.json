@@ -107,47 +107,6 @@
 					"isSequential": true,
 					"activities": [
 						{
-							"name": "save_accumulated_names",
-							"type": "SetVariable",
-							"dependsOn": [],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "temp",
-								"value": {
-									"value": "@variables('all_file_names')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
-							"name": "update_list",
-							"type": "SetVariable",
-							"dependsOn": [
-								{
-									"activity": "save_accumulated_names",
-									"dependencyConditions": [
-										"Completed"
-									]
-								}
-							],
-							"policy": {
-								"secureOutput": false,
-								"secureInput": false
-							},
-							"userProperties": [],
-							"typeProperties": {
-								"variableName": "all_file_names",
-								"value": {
-									"value": "@concat(variables('temp'), substring(item().name, 0, indexof(item().name, '.')), ',')",
-									"type": "Expression"
-								}
-							}
-						},
-						{
 							"name": "append_name",
 							"type": "AppendVariable",
 							"dependsOn": [],
@@ -161,47 +120,11 @@
 				}
 			},
 			{
-				"name": "deduplicate",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "accumulate_file_names",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"timeout": "0.12:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"source": {
-						"type": "AzureSqlSource",
-						"sqlReaderQuery": {
-							"value": "@concat('select distinct [value] from string_split(''',\nsubstring(variables('all_file_names'), 0, sub(length(variables('all_file_names')),1)),\n''', '','')')",
-							"type": "Expression"
-						},
-						"queryTimeout": "02:00:00",
-						"partitionOption": "None"
-					},
-					"dataset": {
-						"referenceName": "ds_azure_sql_database",
-						"type": "DatasetReference"
-					},
-					"firstRowOnly": false
-				}
-			},
-			{
 				"name": "move_fileset_to_processing",
 				"type": "ForEach",
 				"dependsOn": [
 					{
-						"activity": "deduplicate",
+						"activity": "deduplicate_file_names",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -210,7 +133,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('deduplicate').output.value",
+						"value": "@variables('all_file_names_array')",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -241,7 +164,7 @@
 											"type": "Expression"
 										},
 										"file_pattern": {
-											"value": "@concat(item().value, '.csv')",
+											"value": "@concat(item(), '.csv')",
 											"type": "Expression"
 										}
 									}
@@ -284,7 +207,7 @@
 											"type": "Expression"
 										},
 										"file_pattern": {
-											"value": "@concat(item().value, '.ctl')",
+											"value": "@concat(item(), '.ctl')",
 											"type": "Expression"
 										}
 									}
@@ -402,30 +325,6 @@
 						"type": "Expression"
 					}
 				}
-			},
-			{
-				"name": "debug_array",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "deduplicate_file_names",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "all_file_names_array_debug",
-					"value": {
-						"value": "@variables('all_file_names_array')",
-						"type": "Expression"
-					}
-				}
 			}
 		],
 		"parameters": {
@@ -435,19 +334,10 @@
 			}
 		},
 		"variables": {
-			"all_file_names": {
-				"type": "String"
-			},
-			"temp": {
-				"type": "String"
-			},
 			"all_file_names_array": {
 				"type": "Array"
 			},
 			"all_file_names_array_with_dups": {
-				"type": "Array"
-			},
-			"all_file_names_array_debug": {
 				"type": "Array"
 			}
 		},
