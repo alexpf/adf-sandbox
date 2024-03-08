@@ -146,6 +146,16 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "append_name",
+							"type": "AppendVariable",
+							"dependsOn": [],
+							"userProperties": [],
+							"typeProperties": {
+								"variableName": "all_file_names_array_with_dups",
+								"value": "substring(item().name, 0, indexof(item().name, '.'))"
+							}
 						}
 					]
 				}
@@ -368,6 +378,54 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "deduplicate_file_names",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "accumulate_file_names",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "all_file_names_array",
+					"value": {
+						"value": "@union(variables('all_file_names_array_with_dups'), variables('all_file_names_array_with_dups'))",
+						"type": "Expression"
+					}
+				}
+			},
+			{
+				"name": "debug_array",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "deduplicate_file_names",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "all_file_names_array_debug",
+					"value": {
+						"value": "@variables('all_file_names_array')",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"parameters": {
@@ -382,6 +440,15 @@
 			},
 			"temp": {
 				"type": "String"
+			},
+			"all_file_names_array": {
+				"type": "Array"
+			},
+			"all_file_names_array_with_dups": {
+				"type": "Array"
+			},
+			"all_file_names_array_debug": {
+				"type": "Array"
 			}
 		},
 		"annotations": []
